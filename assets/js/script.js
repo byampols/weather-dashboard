@@ -1,6 +1,10 @@
 //GLOBAL VARIABLES
+var searchFormEl = document.querySelector("#search");
 var todayContainerEl = document.querySelector("#today");
-var forecastContainerEl = document.querySelector("#forecast");
+var forecastContainerEl = document.querySelector("#forecast-container");
+var forecastEl = forecastContainerEl.querySelector("#forecast");
+var searchHistoryEl = document.querySelector("#search-history");
+var searchHistory = [];
 
 //FUNCTIONS
 var todaysForecast = function(forecast,name) {
@@ -13,6 +17,7 @@ var todaysForecast = function(forecast,name) {
     var todaysUVIndex = forecast.current.uvi;
     //fill out TODAY container
     todayContainerEl.innerHTML="";
+    todayContainerEl.classList = "border border-dark bg-secondary text-light";
 
     var todayDiv = document.createElement("div");
     todayDiv.classList = "mx-3 my-2";
@@ -43,14 +48,15 @@ var todaysForecast = function(forecast,name) {
     todayDiv.appendChild(todayHumidity);
     todayDiv.appendChild(todayUV);
     todayContainerEl.appendChild(todayDiv);
-}
+};
 
 var printForecast = function(forecast,name) {
     //call function to print today's forecast
     todaysForecast(forecast,name);
     //for loop to print the 5 day forecast
     var dailyForecast = forecast.daily;
-    forecastContainerEl.innerHTML = "";
+    forecastContainerEl.querySelector("h2").textContent = "5-Day Forecast:";
+    forecastEl.innerHTML = "";
     for (let i = 1; i<dailyForecast.length - 2; i++) {
         var date = moment.unix(dailyForecast[i].dt).format("M/D/YYYY");
         var icon = dailyForecast[i].weather[0].icon;
@@ -67,7 +73,7 @@ var printForecast = function(forecast,name) {
         cardHeader.innerHTML = `${date}`;
         //create card body
         var cardBody = document.createElement("div");
-        cardBody.classList = "card-body text-center p-3";
+        cardBody.classList = "card-body bg-secondary text-center";
         
         //create image
         var image = document.createElement("img");
@@ -90,7 +96,7 @@ var printForecast = function(forecast,name) {
         dayCard.appendChild(cardHeader);
         dayCard.appendChild(cardBody);
 
-        forecastContainerEl.appendChild(dayCard);
+        forecastEl.appendChild(dayCard);
     }
 };
 
@@ -106,6 +112,70 @@ var getForecast = function(lat,long,name) {
         }
     });
 };
+
+var getCity = function(name) {
+    var apiUrl = `https://api.opencagedata.com/geocode/v1/json?q=${name}&key=e062f0068b08490f942fbd2edd564afc`
+    //e062f0068b08490f942fbd2edd564afc
+    fetch(apiUrl).then(function(response) {
+        if (response.ok) {
+            response.json().then(function(data) {
+                var results = data.results[0];
+                getForecast(results.geometry.lat,results.geometry.lng,results.formatted);
+            })
+        } else {
+            alert('Error: City not found!');
+            return;
+        }
+    });
+};
+
+var printSearchHistory = function() {
+    //get history
+    searchHistoryEl.innerHTML = "";
+    var searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
+    if (!searchHistory) {
+        searchHistory = [];
+    }
+    //for item in searchHistory, add a button
+    for (let i = 0; i < searchHistory.length; i++) {
+        var button = document.createElement("button");
+        button.classList = "btn btn-secondary w-100 my-2";
+        button.innerHTML = `${searchHistory[i].trim()}`;
+        searchHistoryEl.appendChild(button);
+    }
+};
+
+var saveHistory = function(search) {
+    if (search === "") {
+        return;
+    }
+    var searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
+    if (!searchHistory) {
+        searchHistory = [];
+    }
+    searchHistory.unshift(search);
+    if (searchHistory.length > 8) {
+        searchHistory.pop();
+    }
+    localStorage.setItem("searchHistory",JSON.stringify(searchHistory));
+    printSearchHistory();
+};
+
+var historyEventHandler = function(event) {
+    if (event.target.type === "submit") {
+        var city = event.target.textContent;
+        getCity(city);
+    }
+}
+
+var searchEventHandler = function(event) {
+    event.preventDefault();
+    var inputEl = event.target.querySelector("#city-name").value;
+    event.target.querySelector("#city-name").value = "";
+    saveHistory(inputEl);
+    getCity(inputEl);
+};
 //EVENT-LISTENERS
-//moment.unix(data.current.dt).format("M/D/YYYY")
-getForecast(25.0443,-77.3504, "Nassau");
+printSearchHistory();
+searchFormEl.addEventListener("submit", searchEventHandler);
+searchHistoryEl.addEventListener("click", historyEventHandler);

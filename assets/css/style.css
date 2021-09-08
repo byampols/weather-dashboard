@@ -23,7 +23,7 @@ body {
 header {
     background: var(--header-color);
     color: var(--light);
-    padding: 1em 0;
+    padding: .5rem 0;
 }
 
 header h1 {
@@ -40,5 +40,9 @@ main h2, label {
 
 #forecasts-col {
     margin: 1em 0;
+}
+
+.card-body {
+    padding: 0 1.25rem;
 }
 /*main styles end*/

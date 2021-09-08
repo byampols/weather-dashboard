@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" />
     <link rel="stylesheet" href="./assets/css/style.css" />
     <title>Weather Dashboard</title>
 </head>
@@ -15,27 +14,25 @@
     </header>
 
     <main class = "row w-100">
+
             <div class = "col-3 ml-2">
                 <form id = "search" class = "form-group border-bottom border-dark mb-2">
                     <label for="city-name" class = "font-weight-bold">Search for a City:</label>
                     <input type = "text" id = "city-name" name = "city-name" autofocus = "true" class = "form-control" placeholder="San Diego"/>
                     <button type = "submit" class = "btn btn-primary w-100 my-3">Search</button>
                 </form>
-                <div id = "search-history">
-                    <button class = "btn btn-secondary w-100 my-2" city-name = "Austin">Austin</button>
-                    <button class = "btn btn-secondary w-100 my-2" city-name = "Austin">Austin</button>
-                    <button class = "btn btn-secondary w-100 my-2" city-name = "Austin">Austin</button>
-                </div>
+                <div id = "search-history"></div>
             </div>
-            <div id = "forecasts-col" class = "col">
-                <div id = "today" class = "border border-dark bg-secondary text-light"></div>
 
-                <div class = "mt-3 mr-3">
-                    <h2>5-Day Forecast:</h2>
-                    <div id = "forecast" class = "row ml-0 mt-3 justify-content-between"></div>
+            <div id = "forecasts-col" class = "col">
+                <div id = "today"></div>
+
+                <div id = "forecast-container" class = "mt-3 mr-3">
+                    <h2></h2>
+                    <div id = "forecast" class = "row ml-0 mt-1 justify-content-between"></div>
                 </div>
             </div>
-        </div>
+
     </main>
 
     <footer>
