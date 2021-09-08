@@ -1,0 +1,52 @@
+/*general styles begin*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --header-color: linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 100%);
+    --light: #eee;
+    --dark: #000;
+    --darkgrey: #333;
+    --font: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+body {
+    background: var(--light);
+    font-family: var(--font);
+}
+/*general styles end*/
+
+/*header styles begin*/
+header {
+    background: var(--header-color);
+    color: var(--light);
+    padding: .5rem 0;
+}
+
+header h1 {
+    font-weight: bolder;
+}
+/*header styles end*/
+
+/*main styles begin*/
+main label {
+    font-size: 1.85em;
+    font-weight: bolder;
+}
+
+main h2 {
+    font-size: 1.35em;
+    font-weight: bolder;
+}
+
+#forecasts-col {
+    margin: 1em 0;
+}
+
+.card-body {
+    padding: 0 1.25rem;
+}
+/*main styles end*/
