@@ -32,10 +32,14 @@ header h1 {
 /*header styles end*/
 
 /*main styles begin*/
-main h2, label {
+main label {
     font-size: 1.85em;
     font-weight: bolder;
+}
 
+main h2 {
+    font-size: 1.35em;
+    font-weight: bolder;
 }
 
 #forecasts-col {

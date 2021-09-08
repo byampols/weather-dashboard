@@ -7,6 +7,9 @@ var searchHistoryEl = document.querySelector("#search-history");
 var searchHistory = [];
 
 //FUNCTIONS
+
+//creates the today's forecast part of the dashboard
+//seperate from the 5 day forecast generation due to using different HTML for the layout
 var todaysForecast = function(forecast,name) {
     //get data
     var todaysDate = moment.unix(forecast.current.dt).format("M/D/YYYY");
@@ -15,12 +18,15 @@ var todaysForecast = function(forecast,name) {
     var todaysWind = forecast.current.wind_speed;
     var todaysHumidity = forecast.current.humidity;
     var todaysUVIndex = forecast.current.uvi;
-    //fill out TODAY container
+    //Reset the container and add the border
     todayContainerEl.innerHTML="";
     todayContainerEl.classList = "border border-dark bg-secondary text-light";
 
+    //Create the div for the content
     var todayDiv = document.createElement("div");
-    todayDiv.classList = "mx-3 my-2";
+    todayDiv.classList = "mx-3 my-0";
+
+    //fill out TODAY container
     var todayHeader = document.createElement("h2");
     todayHeader.innerHTML = `${name} (${todaysDate}) <img src="http://openweathermap.org/img/wn/${todaysIcon}@2x.png" />`;
     var todayTemp = document.createElement("p");
@@ -28,8 +34,9 @@ var todaysForecast = function(forecast,name) {
     var todayWind = document.createElement("p");
     todayWind.innerHTML = `Wind: ${todaysWind} m/s`;
     var todayHumidity = document.createElement("p");
-    todayHumidity.innerHTML = `Humidity: ${todaysHumidity}%`
+    todayHumidity.innerHTML = `Humidity: ${todaysHumidity}%`;
     var todayUV = document.createElement("p");
+    //color the uv index based on severity
     var color = "";
     if (todaysUVIndex < 3) {
         color = "badge-success";
@@ -38,7 +45,7 @@ var todaysForecast = function(forecast,name) {
     } else if (todaysUVIndex < 8) {
         color = "badge-danger";
     } else {
-        color = "badge-dark";
+        color = "badge-dark text-light";
     }
     todayUV.innerHTML = `UV Index: <span class = "badge ${color}">${todaysUVIndex}</span>`;
     //append elements
@@ -50,14 +57,17 @@ var todaysForecast = function(forecast,name) {
     todayContainerEl.appendChild(todayDiv);
 };
 
+//prints the forecast dashboard on search
 var printForecast = function(forecast,name) {
     //call function to print today's forecast
     todaysForecast(forecast,name);
-    //for loop to print the 5 day forecast
-    var dailyForecast = forecast.daily;
+    //Reset the container and add the "5-Day Forecast text"
     forecastContainerEl.querySelector("h2").textContent = "5-Day Forecast:";
     forecastEl.innerHTML = "";
+    //for loop to print the 5 day forecast
+    var dailyForecast = forecast.daily;
     for (let i = 1; i<dailyForecast.length - 2; i++) {
+        //get values for current date
         var date = moment.unix(dailyForecast[i].dt).format("M/D/YYYY");
         var icon = dailyForecast[i].weather[0].icon;
         var temp = dailyForecast[i].temp.day;
@@ -100,6 +110,7 @@ var printForecast = function(forecast,name) {
     }
 };
 
+//fetches the forecast for the given lat and long
 var getForecast = function(lat,long,name) {
     var apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&units=metric&exclude=minutely,hourly&appid=1474a6ceb86df05129151e5a9bd2c243`;
     fetch(apiUrl).then(function(response) {
@@ -113,9 +124,9 @@ var getForecast = function(lat,long,name) {
     });
 };
 
+//gets the current location based on the name (uses the most likely option)
 var getCity = function(name) {
-    var apiUrl = `https://api.opencagedata.com/geocode/v1/json?q=${name}&key=e062f0068b08490f942fbd2edd564afc`
-    //e062f0068b08490f942fbd2edd564afc
+    var apiUrl = `https://api.opencagedata.com/geocode/v1/json?q=${name}&key=e062f0068b08490f942fbd2edd564afc`;
     fetch(apiUrl).then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
@@ -129,6 +140,7 @@ var getCity = function(name) {
     });
 };
 
+//prints the search history buttons ot the sidebar
 var printSearchHistory = function() {
     //get history
     searchHistoryEl.innerHTML = "";
@@ -145,22 +157,31 @@ var printSearchHistory = function() {
     }
 };
 
+//saves the search history to localstorage
 var saveHistory = function(search) {
+    //if the search is empty, do not do anything
     if (search === "") {
         return;
     }
+    //get the search history, and initialize it if its empty
     var searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
     if (!searchHistory) {
         searchHistory = [];
     }
+    //place the most recent search at the front of the array
     searchHistory.unshift(search);
+    //if it's too long, pop the last result
     if (searchHistory.length > 8) {
         searchHistory.pop();
     }
+    //save to local storage and reload the history
     localStorage.setItem("searchHistory",JSON.stringify(searchHistory));
     printSearchHistory();
 };
 
+//EVENT HANDLERS
+
+//event handler for pressing a search history button
 var historyEventHandler = function(event) {
     if (event.target.type === "submit") {
         var city = event.target.textContent;
@@ -168,6 +189,7 @@ var historyEventHandler = function(event) {
     }
 }
 
+//event handler for submitting a search
 var searchEventHandler = function(event) {
     event.preventDefault();
     var inputEl = event.target.querySelector("#city-name").value;
@@ -175,7 +197,10 @@ var searchEventHandler = function(event) {
     saveHistory(inputEl);
     getCity(inputEl);
 };
-//EVENT-LISTENERS
+
+//INITIAL FUNCTION CALLS
 printSearchHistory();
+
+//EVENT-LISTENERS
 searchFormEl.addEventListener("submit", searchEventHandler);
 searchHistoryEl.addEventListener("click", historyEventHandler);
