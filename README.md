@@ -24,12 +24,12 @@ Deployed application: [the deployed application](https://byampols.github.io/weat
 
 ## Credits
 
-[jQuery](https://jquery.com/)
-[Bootstrap](https://getbootstrap.com/)
-[Popper](https://popper.js.org/)
-[moment.js](https://momentjs.com/)
-[Opencagedata's geocoding api](https://opencagedata.com/)
-[Openweather api](https://openweathermap.org)
+* [jQuery](https://jquery.com/)
+* [Bootstrap](https://getbootstrap.com/)
+* [Popper](https://popper.js.org/)
+* [moment.js](https://momentjs.com/)
+* [Opencagedata's geocoding api](https://opencagedata.com/)
+* [Openweather api](https://openweathermap.org)
 
 
 ## License
