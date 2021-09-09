@@ -10,7 +10,7 @@ Deployed application: [the deployed application](https://byampols.github.io/weat
 
 ## Usage 
 
-[The Dashboard](assets/images/screenshot.png)
+![The Dashboard](assets/images/screenshot.png)
 
 * When a place is entered into the search field, it will display a dashboard with weather information for that location.
     * This is done using a weather and geocoding api. 
